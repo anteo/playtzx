@@ -1,5 +1,11 @@
-PlayTZX v0.12c
+PlayTZX v0.12d
 --------------
+
+This version uses PortAudio library (http://www.portaudio.com/) to play
+audio, so it should compile and work on different platforms (incl. OS X)
+without an issue.
+
+------------------------------------------------------------------------
 
 This is a modified version of v0.12b to remove the arbitrary limit of
 2048 blocks which was previously hardcoded and would cause buffer

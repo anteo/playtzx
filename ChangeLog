@@ -1,3 +1,7 @@
+2020-07-02  Anton Argirov  <anton.argirov@gmail.com>
+	* Rewritten to use PortAudio library which makes it compile on 
+	  different platforms (incl. OS X)
+
 2005-05-16  Philip Kendall  <pak21-spectrum@srcf.ucam.org>
 
 	* Removed arbitrary limit of 2048 blocks, which would previously
