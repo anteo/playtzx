@@ -1,0 +1,16 @@
+.deps
+autom4te.cache
+compile
+Makefile
+config.guess
+config.h
+config.h.in
+config.log
+config.status
+config.sub
+configure
+configure.scan
+install-sh
+stamp-h1
+playtzx
+*.o
