@@ -146,12 +146,14 @@ char add_bit;
 #define LOAMP   0x10		/* Low Level Amplitude */
 #define HIAMP   0xF0		/* High Level Amplitude */
 
-char tstr[255];
-char tstr2[255];
-char tstr3[255];
-char tstr4[255];
-char spdstr[255];
-char pstr[255];
+char tstr1[200];
+char tstr2[200];
+char tstr3[100];
+char tstr4[100];
+char tstr5[100];
+char spdstr[500];
+char pstr[1200];
+char tstr[1500];
 
 SNDSoundStruct auhead;  /* .au-file header */
 
@@ -549,14 +551,14 @@ IdentifyC64ROM(int pos, unsigned char *data, int type)
       else
         strcpy(name, "ROM: Last Block Repeated");
     }
-    strcpy(tstr, name);
+    strcpy(tstr1, name);
     strcpy(spdstr, "C64 ROM Data ");
     return;
   }
   if (!type)
-    strcpy(tstr, "------------------------");
+    strcpy(tstr1, "------------------------");
   else
-    strcpy(tstr, "Unknown");
+    strcpy(tstr1, "Unknown");
   strcpy(spdstr, "C64 Data     ");
 }
 
@@ -592,14 +594,14 @@ IdentifyC64Turbo(int pos, unsigned char *data, int type)
       else
         strcpy(name, "TurboTape Unknown");
     }
-    strcpy(tstr, name);
+    strcpy(tstr1, name);
     strcpy(spdstr, "C64 Turbo    ");
     return;
   }
   if (!type)
-    strcpy(tstr, "------------------------");
+    strcpy(tstr1, "------------------------");
   else
-    strcpy(tstr, "Unknown");
+    strcpy(tstr1, "Unknown");
   strcpy(spdstr, "C64 Data     ");
 }
 
@@ -615,25 +617,25 @@ Identify(int len, unsigned char *temp, int type)
       else
         s = 0;
 
-      strcpy(tstr, "    ");
+      strcpy(tstr1, "    ");
 
       for (n = 0; n < 16; n++) {
         if (temp[n + 1])
-          tstr[n + s] = temp[n + 1];
+          tstr1[n + s] = temp[n + 1];
         else
-          tstr[n + s] = ' ';
+          tstr1[n + s] = ' ';
       }
 
       for (n = 0; n < 4; n++)
-        tstr[n + s + 16] = ' ';
+        tstr1[n + s + 16] = ' ';
 
-      tstr[n + s + 16] = 0;
+      tstr1[n + s + 16] = 0;
 
     } else {
       if (!type)
-        strcpy(tstr, "    ------------------  ");
+        strcpy(tstr1, "    ------------------  ");
       else
-        strcpy(tstr, "Headerless");
+        strcpy(tstr1, "Headerless");
     }
 
     return;
@@ -645,41 +647,41 @@ Identify(int len, unsigned char *temp, int type)
 
         switch (temp[1]) {
         case 0x10:
-          strcpy(tstr, "    Program : ");
+          strcpy(tstr1, "    Program : ");
           break;
 
         case 0x11:
-          strcpy(tstr, " Num. Array : ");
+          strcpy(tstr1, " Num. Array : ");
           break;
 
         case 0x12:
-          strcpy(tstr, "Char. Array : ");
+          strcpy(tstr1, "Char. Array : ");
           break;
 
         case 0x13:
-          strcpy(tstr, "      Bytes : ");
+          strcpy(tstr1, "      Bytes : ");
           break;
 
         }
       } else {
         switch (temp[1]) {
         case 0x10:
-          strcpy(tstr, "Program : ");
+          strcpy(tstr1, "Program : ");
           s = 10;
           break;
 
         case 0x11:
-          strcpy(tstr, "Num. Array : ");
+          strcpy(tstr1, "Num. Array : ");
           s = 13;
           break;
 
         case 0x12:
-          strcpy(tstr, "Char. Array : ");
+          strcpy(tstr1, "Char. Array : ");
           s = 14;
           break;
 
         case 0x13:
-          strcpy(tstr, "Bytes : ");
+          strcpy(tstr1, "Bytes : ");
           s = 8;
           break;
 
@@ -688,17 +690,17 @@ Identify(int len, unsigned char *temp, int type)
 
       for (n = 0; n < 10; n++) {
         if (temp[n + 2] > 31 && temp[n + 2] < 127)
-          tstr[n + s] = temp[n + 2];
+          tstr1[n + s] = temp[n + 2];
         else
-          tstr[n + s] = 32;
+          tstr1[n + s] = 32;
       }
 
-      tstr[n + s] = 0;
+      tstr1[n + s] = 0;
     } else {
       if (!type)
-        strcpy(tstr, "    --------------------");	/* Not Header */
+        strcpy(tstr1, "    --------------------");	/* Not Header */
       else
-        strcpy(tstr, "Headerless");
+        strcpy(tstr1, "Headerless");
     }
     return;
   }
@@ -708,41 +710,41 @@ Identify(int len, unsigned char *temp, int type)
 
       switch (temp[1]) {
       case 0x00:
-        strcpy(tstr, "    Program : ");
+        strcpy(tstr1, "    Program : ");
         break;
 
       case 0x01:
-        strcpy(tstr, " Num. Array : ");
+        strcpy(tstr1, " Num. Array : ");
         break;
 
       case 0x02:
-        strcpy(tstr, "Char. Array : ");
+        strcpy(tstr1, "Char. Array : ");
         break;
 
       case 0x03:
-        strcpy(tstr, "      Bytes : ");
+        strcpy(tstr1, "      Bytes : ");
         break;
 
       }
     } else {
       switch (temp[1]) {
       case 0x00:
-        strcpy(tstr, "Program : ");
+        strcpy(tstr1, "Program : ");
         s = 10;
         break;
 
       case 0x01:
-        strcpy(tstr, "Num. Array : ");
+        strcpy(tstr1, "Num. Array : ");
         s = 13;
         break;
 
       case 0x02:
-        strcpy(tstr, "Char. Array : ");
+        strcpy(tstr1, "Char. Array : ");
         s = 14;
         break;
 
       case 0x03:
-        strcpy(tstr, "Bytes : ");
+        strcpy(tstr1, "Bytes : ");
         s = 8;
         break;
       }
@@ -750,18 +752,18 @@ Identify(int len, unsigned char *temp, int type)
 
     for (n = 0; n < 10; n++) {
       if (temp[n + 2] > 31 && temp[n + 2] < 127)
-        tstr[n + s] = temp[n + 2];
+        tstr1[n + s] = temp[n + 2];
       else
-        tstr[n + s] = 32;
+        tstr1[n + s] = 32;
 
     }
 
-    tstr[n + s] = 0;
+    tstr1[n + s] = 0;
   } else {
     if (!type)
-      strcpy(tstr, "    --------------------");	/* Not Header */
+      strcpy(tstr1, "    --------------------");	/* Not Header */
     else
-      strcpy(tstr, "Headerless");
+      strcpy(tstr1, "Headerless");
   }
 
 }
@@ -1426,7 +1428,7 @@ main(int argc, char *argv[])
         Identify(datalen, data, 1);
 
         sprintf(pstr, "Block %3d (%5X):  10 - Standard Loading Data - %s\n", curr + 1,
-          block[curr] + 10, tstr);
+          block[curr] + 10, tstr1);
         writeout(pstr);
 
         sprintf(tstr, "                Length: %5d bytes\n", datalen);
@@ -1465,7 +1467,7 @@ main(int argc, char *argv[])
         Identify(datalen, data, 1);
 
         sprintf(pstr, "Block %3d (%5X):  11 - Custom Loading Data - %s\n", curr + 1,
-          block[curr] + 10, tstr);
+          block[curr] + 10, tstr1);
         writeout(pstr);
 
         sprintf(tstr, "                Length: %5d bytes\n", datalen);
@@ -1708,7 +1710,7 @@ main(int argc, char *argv[])
       data += 36;
       IdentifyC64ROM(datalen, data, 1);
       if (info == 1) {
-        sprintf(pstr, "Block %3d (%5X):  16 - C64 ROM Type Data - %s\n", curr + 1, block[curr] + 10, tstr);
+        sprintf(pstr, "Block %3d (%5X):  16 - C64 ROM Type Data - %s\n", curr + 1, block[curr] + 10, tstr1);
         writeout(pstr);
         sprintf(tstr, "                Length: %5d bytes\n", datalen);
         writeout(tstr);
@@ -1779,7 +1781,7 @@ main(int argc, char *argv[])
       data += 18;
       IdentifyC64Turbo(datalen, data, 1);
       if (info == 1) {
-        sprintf(pstr, "Block %3d (%5X):  17 - C64 Turbo Tape Type Data - %s\n", curr + 1, block[curr] + 10, tstr);
+        sprintf(pstr, "Block %3d (%5X):  17 - C64 Turbo Tape Type Data - %s\n", curr + 1, block[curr] + 10, tstr1);
         writeout(pstr);
         sprintf(tstr, "                Length: %5d bytes\n", datalen);
         writeout(tstr);
@@ -2199,15 +2201,15 @@ main(int argc, char *argv[])
 
       /* Message */
     case 0x31:
-      CopyString(pstr, &data[2], data[1]);
+      CopyString(tstr1, &data[2], data[1]);
 
       if (info != 1) {
         if (draw)
-          printf("    Message: %s\n", pstr);
+          printf("    Message: %s\n", tstr1);
       }
        /* Pause in Message block is ignored ... */ 
       else {
-        line += MultiLine(pstr, 34, spdstr);
+        line += MultiLine(tstr1, 34, spdstr);
 
         sprintf(tstr, "Block %3d (%5X):  31 - Message: %s\n", curr + 1, block[curr] + 10,
           spdstr);
@@ -2246,51 +2248,51 @@ main(int argc, char *argv[])
         while (num) {
           switch (data[0]) {
           case 0x00:
-            sprintf(pstr, "         Title:");
+            sprintf(tstr1, "         Title:");
             break;
 
           case 0x01:
-            sprintf(pstr, "     Publisher:");
+            sprintf(tstr1, "     Publisher:");
             break;
 
           case 0x02:
-            sprintf(pstr, "     Author(s):");
+            sprintf(tstr1, "     Author(s):");
             break;
 
           case 0x03:
-            sprintf(pstr, "  Release Date:");
+            sprintf(tstr1, "  Release Date:");
             break;
 
           case 0x04:
-            sprintf(pstr, "      Language:");
+            sprintf(tstr1, "      Language:");
             break;
 
           case 0x05:
-            sprintf(pstr, "     Game Type:");
+            sprintf(tstr1, "     Game Type:");
             break;
 
           case 0x06:
-            sprintf(pstr, "         Price:");
+            sprintf(tstr1, "         Price:");
             break;
 
           case 0x07:
-            sprintf(pstr, "        Loader:");
+            sprintf(tstr1, "        Loader:");
             break;
 
           case 0x08:
-            sprintf(pstr, "        Origin:");
+            sprintf(tstr1, "        Origin:");
             break;
 
           default:
-            sprintf(pstr, "      Comments:");
+            sprintf(tstr1, "      Comments:");
             break;
           }
 
-          CopyString(spdstr, &data[2], data[1]);
+          CopyString(tstr3, &data[2], data[1]);
 
-          line += MultiLine(spdstr, 16, tstr);
+          line += MultiLine(tstr3, 16, tstr2);
 
-          sprintf(spdstr, "%s %s\n", pstr, tstr);
+          sprintf(spdstr, "%s %s\n", tstr1, tstr2);
           writeout(spdstr);
 
           data += data[1] + 2;
@@ -2398,31 +2400,31 @@ main(int argc, char *argv[])
 
       /* Custom Info */
     case 0x35:
-      CopyString(pstr, data, 16);
+      CopyString(tstr3, data, 16);
 
       if (info != 1) {
         if (draw) {
-          if (strcmp(pstr, "POKEs           "))
-            printf("    Custom Info: %s\n", pstr);	/* Only Name of Custom
+          if (strcmp(tstr3, "POKEs           "))
+            printf("    Custom Info: %s\n", tstr3);	/* Only Name of Custom
                        info except POKEs is
                        used ... */
           else {
-            sprintf(tstr, "    Custom Info: %s", pstr);
+            sprintf(tstr, "    Custom Info: %s", tstr3);
             MakeFixedString(tstr, 69);
             strcpy(tstr + 52, " (-info for more)");
             printf("%s\n", tstr);
           }
         }
       } else {
-        sprintf(tstr, "Block %3d (%5X):  35 - Custom Info: %s\n", curr + 1, block[curr] + 10, pstr);
-        writeout(tstr);
-        if (!strcmp(pstr, "POKEs           ")) {
+        sprintf(tstr2, "Block %3d (%5X):  35 - Custom Info: %s\n", curr + 1, block[curr] + 10, tstr3);
+        writeout(tstr2);
+        if (!strcmp(tstr3, "POKEs           ")) {
           data += 20;
           if (data[0]) {
-            sprintf(pstr, "  Description:");
-            CopyString(spdstr, &data[1], data[0]);
-            line += MultiLine(spdstr, 15, tstr) + 1;
-            sprintf(spdstr, "%s %s\n\n", pstr, tstr);
+            sprintf(tstr1, "  Description:");
+            CopyString(tstr5, &data[1], data[0]);
+            line += MultiLine(tstr5, 15, tstr2) + 1;
+            sprintf(spdstr, "%s %s\n\n", tstr1, tstr2);
             writeout(spdstr);
           }
           data += data[0] + 1;
@@ -2433,21 +2435,21 @@ main(int argc, char *argv[])
           sprintf(pstr, "         -------------------------------------------------------------\n");
           writeout(pstr);
           while (numt) {
-            CopyString(pstr, &data[1], data[0]);
+            CopyString(tstr5, &data[1], data[0]);
             data += data[0] + 1;
             nump = data[0];
             data++;
             for (n = 0; n < nump; n++) {
-              sprintf(spdstr, "          %s", pstr);
+              sprintf(spdstr, "          %s", tstr5);
               MakeFixedString(spdstr, 48);
               if (data[0] & 8)
                 strcpy(tstr2, "   -");
               else
                 sprintf(tstr2, "%4d", data[0] & 7);
               if (data[0] & 32)
-                strcpy(tstr, "  -");
+                strcpy(tstr1, "  -");
               else
-                sprintf(tstr, "%3d", data[4]);
+                sprintf(tstr1, "%3d", data[4]);
               if (data[0] & 16)
                 strcpy(tstr3, "  -");
               else
@@ -2456,10 +2458,10 @@ main(int argc, char *argv[])
                 strcpy(tstr4, "+");
               else
                 strcpy(tstr4, " ");
-              sprintf(pstr, "%s %s %5d %s %s %s\n", spdstr, tstr4, Get2(&data[1]), tstr3, tstr, tstr2);
+              sprintf(pstr, "%s %s %5d %s %s %s\n", spdstr, tstr4, Get2(&data[1]), tstr3, tstr1, tstr2);
               writeout(pstr);
               data += 5;
-              pstr[0] = 0;
+              *tstr5 = '\0';
             }
             numt--;
           }
@@ -2530,7 +2532,7 @@ main(int argc, char *argv[])
       if (id != 0x14)
         Identify(datalen, data, 0);
       else
-        strcpy(tstr, "    Pure Data           ");
+        strcpy(tstr1, "    Pure Data           ");
 
       if (id == 0x10)
         sprintf(spdstr, "Normal Speed");
@@ -2543,7 +2545,7 @@ main(int argc, char *argv[])
         sprintf(pstr, ",Pause: %2.3fs", ((float) tzx_pause) / 1000.0);
 
       if (draw)
-        printf("%s  Length:%6d  %s %s\n", tstr, datalen, spdstr, pstr);
+        printf("%s  Length:%6d  %s %s\n", tstr1, datalen, spdstr, pstr);
 
       if (info != 2) {
         while (pilot) {
@@ -2634,29 +2636,29 @@ main(int argc, char *argv[])
         }			/* Play PILOT TONE */
         if (sb_sync1)
           PlayC64SB(sb_sync1);	/* Play SYNC PULSES */
-          if (sb_sync2)
-            PlayC64SB(sb_sync2);
-          datapos = 0;
-          while (datalen) {	/* Play actual DATA */
-            if (datalen != 1) {
-              bitcount = 8;
-              PlayC64ROMByte(data[datapos], 0);
-            } else {
-              bitcount = lastbyte;
-              PlayC64ROMByte(data[datapos], 1);
-            }
-            databyte = data[datapos];
-            datalen--;
-            datapos++;
+        if (sb_sync2)
+          PlayC64SB(sb_sync2);
+        datapos = 0;
+        while (datalen) {	/* Play actual DATA */
+          if (datalen != 1) {
+            bitcount = 8;
+            PlayC64ROMByte(data[datapos], 0);
+          } else {
+            bitcount = lastbyte;
+            PlayC64ROMByte(data[datapos], 1);
           }
-          while (trailing) {
-            PlayC64SB(sb_trailing);
-            trailing--;
-          }			/* Play TRAILING TONE */
-          /* If there is pause after block present then make first millisecond
-             the oposite */
-          /* pulse of last pulse played and the rest in LOAMP ... otherwise
-             don't do ANY tzx_pause */
+          databyte = data[datapos];
+          datalen--;
+          datapos++;
+        }
+        while (trailing) {
+          PlayC64SB(sb_trailing);
+          trailing--;
+        }			/* Play TRAILING TONE */
+        /* If there is pause after block present then make first millisecond
+            the oposite */
+        /* pulse of last pulse played and the rest in LOAMP ... otherwise
+            don't do ANY tzx_pause */
 
 
 /*            if (tzx_pause) { PauseSB(amp,1); amp=LOAMP; if (tzx_pause>1) PauseSB(amp,tzx_pause-1); }*/
@@ -2732,8 +2734,9 @@ main(int argc, char *argv[])
       StopAU();
     else
       StopSB();
+  
+    flushSBBuffer();		/* play the final bits in the audio buffer ?? */
   }
-  flushSBBuffer();		/* play the final bits in the audio buffer ?? */
 /**/
   free(mem);
 
