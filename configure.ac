@@ -26,7 +26,7 @@ AC_MSG_RESULT($warnings)
 
 dnl If it appears we're using gcc as our compiler, turn on warnings
 if test "$ac_cv_prog_cc_g" = yes; then
-    CFLAGS="$CFLAGS -Wall"
+    CFLAGS="$CFLAGS -Wall -Wno-unused-result"
     dnl And possibly lots of warnings
     if test "$warnings" = yes; then
         CFLAGS="$CFLAGS -Wstrict-prototypes -Wmissing-prototypes -Winline -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -W -Wsign-compare"

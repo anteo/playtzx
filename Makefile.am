@@ -7,4 +7,3 @@ playtzx_LDADD   = -lportaudio
 noinst_HEADERS = machines.h audio.h au-file.h
 
 EXTRA_DIST = playtzx.c machines.h audio.h audio.c au-file.h playtzx.txt
-
