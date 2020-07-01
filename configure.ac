@@ -1,13 +1,16 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(playtzx.c)
+AC_INIT(playtzx.c, [0.12d])
 AM_CONFIG_HEADER(config.h)
 
 dnl Use automake to produce `Makefile.in'
-AM_INIT_AUTOMAKE(playtzx, 0.12c)
+AM_INIT_AUTOMAKE
 
 dnl Checks for programs.
 AC_PROG_CC
+
+dnl Check for PortAudio
+AC_CHECK_LIB([portaudio], [Pa_Initialize], [], [AC_MSG_ERROR([Can't find or link to the PortAudio library.])])
 
 dnl Do we want lots of warning messages?
 AC_MSG_CHECKING(whether lots of warnings requested)

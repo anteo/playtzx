@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 bin_PROGRAMS = playtzx
 playtzx_SOURCES = audio.c playtzx.c
-playtzx_LDADD   = 
+playtzx_LDADD   = -lportaudio
 
 noinst_HEADERS = machines.h audio.h au-file.h
 
