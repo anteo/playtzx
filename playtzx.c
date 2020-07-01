@@ -1,5 +1,5 @@
 /*
- * PlayTZX for Linux
+ * PlayTZX
  *
  * version 0.1beta
  *
@@ -56,7 +56,7 @@ Error(char *errstr)
 
 int n, m;
 int num;
-char *d;
+unsigned char *d;
 int line = 3;
 int fh;				/* Input File Handle */
 int ofh;			/* Output File Handle */
@@ -90,7 +90,7 @@ int sb_bit1;			/* Bit-1 */
 int sb_pulse;			/* Pulse in Sequence of pulses and direct recording block */
 int lastbyte;			/* How many bits are in last byte of data ? */
 int tzx_pause;			/* Pause after current block (in 1s/10) */
-char *data;			/* Data to be played */
+unsigned char *data;			/* Data to be played */
 int datalen;			/* Len of ^^^ */
 int datapos;			/* Position in ^^^ */
 int bitcount;			/* How many bits to play in current byte ? */
@@ -189,7 +189,6 @@ ConvSB(int n)
 #define AUDIO_BUFFER_SIZE 4096
 unsigned char audio_buffer[AUDIO_BUFFER_SIZE];
 int buf_index = 0;
-int audiofd;
 
 int 
 FileLength(int fh)
@@ -205,7 +204,7 @@ FileLength(int fh)
 void 
 InitSB()
 {
-  audiofd = open_audio(&freq);
+  open_audio(&freq);
   printf("CoreAudio initialized\n");
 }
 
@@ -481,7 +480,7 @@ PlayC64SB(int len)
 }
 
 void 
-GetC64ROMName(char *name, char *data)
+GetC64ROMName(char *name, unsigned char *data)
 {
   char d;
 
@@ -502,7 +501,7 @@ MirrorByte(char s)
 }
 
 void 
-GetC64StandardTurboTapeName(char *name, char *data)
+GetC64StandardTurboTapeName(char *name, unsigned char *data)
 {
   char d;
 
@@ -562,7 +561,7 @@ IdentifyC64ROM(int pos, unsigned char *data, int type)
 }
 
 void 
-IdentifyC64Turbo(int pos, char *data, int type)
+IdentifyC64Turbo(int pos, unsigned char *data, int type)
 {
   char name[255];
 
@@ -605,7 +604,7 @@ IdentifyC64Turbo(int pos, char *data, int type)
 }
 
 void 
-Identify(int len, char *temp, int type)
+Identify(int len, unsigned char *temp, int type)
 {
   int n, s;
 
@@ -805,7 +804,7 @@ invalidoption(char *s)
   Error(errstr);
 }
 
-unsigned char *
+char *
 GetCheckSum(unsigned char *data, int len)
 {
 /* Calculates a XOR checksum for a block and returns a STRING containing the result*/
@@ -825,7 +824,7 @@ GetCheckSum(unsigned char *data, int len)
 
 
 void 
-CopyString(char *dest, char *sour, int len)
+CopyString(char *dest, unsigned char *sour, int len)
 {
 /* Could just use strpy ... */
   int n;
@@ -861,7 +860,7 @@ writeout(char *s)
       line = 0;
     }
   }
-  printf(s);
+  printf("%s", s);
 }
 
 
@@ -1021,7 +1020,7 @@ PlayC64TurboByte(char byte)
 int 
 main(int argc, char *argv[])
 {
-  printf("\nZXTape Utilities - Play TZX , TZX to VOC Converter and TZX Info v0.12c for Linux\n");
+  printf("\nZXTape Utilities - Play TZX , TZX to VOC Converter and TZX Info v0.12d\n");
   if (argc < 2) {
     printf("\nUsage: playtzx [switches] file.tzx [output.voc|output.au]\n\n");
     printf("       Switches:  -voc      Create a .VOC file instead of audio output\n");
@@ -1161,7 +1160,7 @@ main(int argc, char *argv[])
 
   flen = FileLength(fh);
 
-  mem = (char *) malloc(flen);
+  mem = (unsigned char *) malloc(flen);
 
   if (mem == NULL)
     Error("Not enough memory to load the file!");
@@ -1170,7 +1169,7 @@ main(int argc, char *argv[])
   read(fh, mem, 10);
   mem[7] = 0;
 
-  if (strcmp(mem, "ZXTape!")) {
+  if (strcmp((char *)mem, "ZXTape!")) {
     free(mem);
     Error("File is not in ZXTape format!");
   }
@@ -2539,7 +2538,7 @@ main(int argc, char *argv[])
         sprintf(spdstr, " Speed: %3d%%", speed);
 
       if (curr == numblocks - 1)
-        sprintf(pstr, "\0");
+        *pstr = '\0';
       else
         sprintf(pstr, ",Pause: %2.3fs", ((float) tzx_pause) / 1000.0);
 
@@ -2609,7 +2608,7 @@ main(int argc, char *argv[])
     if (info != 1 && id == 0x16) {	/* C64 ROM data block ... */
       IdentifyC64ROM(datalen, data, 0);
       if (curr == numblocks - 1)
-        sprintf(pstr, "\0");
+        *pstr = '\0';
       else
         sprintf(pstr, ",Pause: %2.3fs", ((float) tzx_pause) / 1000.0);
       if (draw)
@@ -2674,7 +2673,7 @@ main(int argc, char *argv[])
     if (info != 1 && id == 0x17) {	/* C64 Turbo Tape data block ... */
       IdentifyC64Turbo(datalen, data, 0);
       if (curr == numblocks - 1)
-        sprintf(pstr, "\0");
+        *pstr = '\0';
       else
         sprintf(pstr, ",Pause: %2.3fs", ((float) tzx_pause) / 1000.0);
       if (draw)

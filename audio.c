@@ -7,117 +7,87 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <sys/soundcard.h>
 
 #include "audio.h"
+#include "portaudio.h"
 
 /* Mandatory variables */
 
-#define DEVICE_NAME "/dev/dsp"
+PaStream *stream;
 
-int audio_fd;
-
-void play_buffer (unsigned char *buf, int count)
+void pa_error(PaError err)
 {
-  /* then make some noise! */
-  int len;
+  fprintf(stderr, "An error occured while using the portaudio stream\n");
+  fprintf(stderr, "Error number: %d\n", err);
+  fprintf(stderr, "Error message: %s\n", Pa_GetErrorText(err));
+  // Print more information about the error.
+  if (err == paUnanticipatedHostError)
+  {
+    const PaHostErrorInfo *hostErrorInfo = Pa_GetLastHostErrorInfo();
+    fprintf(stderr, "Host API error = #%ld, hostApiType = %d\n", hostErrorInfo->errorCode, hostErrorInfo->hostApiType);
+    fprintf(stderr, "Host API error = %s\n", hostErrorInfo->errorText);
+  }
+  Pa_Terminate();
+  exit(1);
+}
 
-  if ((len = write (audio_fd, buf, count)) == -1)
-    {
-      perror ("audio write");
-      exit (1);
-    }
+void play_buffer(unsigned char *buf, int count)
+{
+  PaError err;
+  err = Pa_WriteStream(stream, buf, count);
+
+  if (err != paNoError)
+    pa_error(err);
 }
 
 /* note, freq is changed! */
 
-int open_audio (int *freq)
+void open_audio(int *freq)
 {
-  int format;
-  int stereo;
-  int speed;
+  PaError err;
+  PaStreamParameters outputParameters;
 
-  /* Open the audio device thingy */
+  err = Pa_Initialize();
+  if (err != paNoError)
+    pa_error(err);
 
-  if ((audio_fd = open (DEVICE_NAME, O_WRONLY, 0)) == -1)
-    {
-      /* Opening device failed */
-      perror (DEVICE_NAME);
-      exit (1);
-    }
+  outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
+  if (outputParameters.device == paNoDevice)
+  {
+    fprintf(stderr, "Error: No default output device.\n");
+    Pa_Terminate();
+    exit(1);
+  }
 
-  /*
-   * set the audio parameters 
-   */
+  outputParameters.channelCount = 1;
+  outputParameters.sampleFormat = paUInt8;
+  outputParameters.suggestedLatency = 0.050; // Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
+  outputParameters.hostApiSpecificStreamInfo = NULL;
 
+  err = Pa_OpenStream(
+      &stream,
+      NULL, /* no input */
+      &outputParameters,
+      *freq,
+      paFramesPerBufferUnspecified,
+      paClipOff, /* we won't output out of range samples so don't bother clipping them */
+      NULL,      /* no callback, use blocking API */
+      NULL);     /* no callback, so no callback userData */
 
-  /* First the audio format */
+  if (err != paNoError)
+    pa_error(err);
 
-  format = AFMT_U8;
-  if (ioctl (audio_fd, SNDCTL_DSP_SETFMT, &format) == -1)
-    {
-      /* Fatal error */
-      perror ("SNDCTL_DSP_SETFMT");
-      exit (1);
-    }
-
-  if (format != AFMT_U8)
-    {
-      /* The device doesn't support the requested audio format. The program  
-         should use another format (for example the one returned in "format") 
-         or alternatively it must display an error message and to abort. */
-
-      /* if the device does not support AFMT_U8 then it can **** ***! :) */
-
-      puts ("bloody hell!");
-      exit (1);
-    }
-
-  /* then number of channels */
-
-  stereo = 0;			/* 0=mono, 1=stereo */
-
-  if (ioctl (audio_fd, SNDCTL_DSP_STEREO, &stereo) == -1)
-    {
-      /* Fatal error */
-      perror ("SNDCTL_DSP_STEREO");
-      exit (1);
-    }
-
-  if (stereo != 0)
-    {
-      /* The device doesn't support stereo mode. */
-
-      /* which is quite unbelievable! */
-
-      puts ("holy smoke!");
-      exit (1);
-    }
-
-  /* and finally, sampling speed */
-
-  speed = *freq;
-
-  if (ioctl (audio_fd, SNDCTL_DSP_SPEED, &speed) == -1)
-    {
-      /* Fatal error */
-      perror ("SNDCTL_DSP_SPEED");
-      exit (1);
-    }
-
-  if (speed != *freq)
-    {
-      /* The device doesn't support the requested speed. */
-
-      printf ("using speed of %d instead of %d\n", speed, *freq);
-    }
-
-  *freq = speed;
-
-  return (audio_fd);
+  err = Pa_StartStream(stream);
+  if (err != paNoError)
+    pa_error(err);
 }
 
-void close_audio ()
+void close_audio()
 {
-  close (audio_fd);
+  PaError err;
+  err = Pa_CloseStream(stream);
+  if (err != paNoError)
+    pa_error(err);
+
+  Pa_Terminate();
 }
